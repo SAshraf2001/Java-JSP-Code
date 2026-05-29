@@ -19,6 +19,9 @@
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModuleModal">
             <i class="bi bi-plus-circle"></i> Add Module
         </button>
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addAssignmentModal">
+            <i class="bi bi-file-earmark-check"></i> Add Assignment
+        </button>
     </div>
 
     <div class="row">
@@ -98,6 +101,85 @@
                     </div>
                 </div>
             </c:forEach>
+
+            <!-- ASSIGNMENTS SECTION -->
+            <h4 class="mt-5 mb-3">Assignments</h4>
+            <c:if test="${empty assignments}">
+                <div class="alert alert-secondary text-center p-3">
+                    No assignments created yet.
+                </div>
+            </c:if>
+            <div class="list-group mb-5">
+                <c:forEach var="assignment" items="${assignments}">
+                    <div class="list-group-item d-flex justify-content-between align-items-start p-3">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">${assignment.title}</div>
+                            <p class="mb-1 text-muted">${assignment.description}</p>
+                            <small class="text-danger"><i class="bi bi-calendar-event"></i> Due: ${assignment.dueDate != null ? assignment.dueDate : 'No due date'} | Max Score: ${assignment.maxScore}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#viewSubmissionsModal${assignment.assignmentId}">
+                            View Submissions <span class="badge bg-info text-dark rounded-pill">${submissionsMap[assignment.assignmentId].size()}</span>
+                        </button>
+                    </div>
+
+                    <!-- View Submissions Modal -->
+                    <div class="modal fade" id="viewSubmissionsModal${assignment.assignmentId}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title">Submissions: ${assignment.title}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <c:set var="submissions" value="${submissionsMap[assignment.assignmentId]}" />
+                                    <c:if test="${empty submissions}">
+                                        <p class="text-muted">No students have submitted this assignment yet.</p>
+                                    </c:if>
+                                    <c:if test="${not empty submissions}">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Student ID</th>
+                                                        <th>Submitted Link</th>
+                                                        <th>Score</th>
+                                                        <th>Feedback</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach var="sub" items="${submissions}">
+                                                        <tr>
+                                                            <td>${sub.studentId}</td>
+                                                            <td><a href="${sub.filePath}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">${sub.filePath}</a></td>
+                                                            <td>
+                                                                <form action="${pageContext.request.contextPath}/instructor/course" method="post" class="d-flex align-items-center gap-2">
+                                                                    <input type="hidden" name="action" value="gradeSubmission">
+                                                                    <input type="hidden" name="courseId" value="${course.courseId}">
+                                                                    <input type="hidden" name="submissionId" value="${sub.submissionId}">
+                                                                    <input type="number" name="score" class="form-control form-control-sm" style="width: 70px;" value="${sub.score}" max="${assignment.maxScore}" required>
+                                                                    <span>/ ${assignment.maxScore}</span>
+                                                            </td>
+                                                            <td>
+                                                                    <input type="text" name="feedback" class="form-control form-control-sm" value="${sub.feedback}" placeholder="Optional feedback">
+                                                            </td>
+                                                            <td>
+                                                                    <button type="submit" class="btn btn-sm btn-success">Save Grade</button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+
         </div>
     </div>
 </div>
@@ -127,6 +209,44 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" form="formModule" class="btn btn-primary">Save Module</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Assignment Modal -->
+<div class="modal fade" id="addAssignmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Assignment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="${pageContext.request.contextPath}/instructor/course" method="post" id="formAssignment">
+                    <input type="hidden" name="action" value="addAssignment">
+                    <input type="hidden" name="courseId" value="${course.courseId}">
+                    <div class="mb-3">
+                        <label class="form-label">Assignment Title</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Instructions / Description</label>
+                        <textarea class="form-control" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Due Date (Optional)</label>
+                        <input type="date" class="form-control" name="dueDate">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Max Score</label>
+                        <input type="number" class="form-control" name="maxScore" value="100" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="formAssignment" class="btn btn-warning">Save Assignment</button>
             </div>
         </div>
     </div>

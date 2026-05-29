@@ -62,9 +62,23 @@ public class StudentServlet extends HttpServlet {
                     lessonsMap.put(m.getModuleId(), lessonDAO.findByModuleId(m.getModuleId()));
                 }
                 
+                com.example.lms.dao.AssignmentDAO assignmentDAO = new com.example.lms.dao.AssignmentDAO();
+                com.example.lms.dao.AssignmentSubmissionDAO submissionDAO = new com.example.lms.dao.AssignmentSubmissionDAO();
+                
+                List<com.example.lms.model.Assignment> assignments = assignmentDAO.findByCourseId(courseId);
+                java.util.Map<Integer, com.example.lms.model.AssignmentSubmission> mySubmissions = new java.util.HashMap<>();
+                for (com.example.lms.model.Assignment a : assignments) {
+                    com.example.lms.model.AssignmentSubmission sub = submissionDAO.findByAssignmentAndStudent(a.getAssignmentId(), user.getUserId());
+                    if (sub != null) {
+                        mySubmissions.put(a.getAssignmentId(), sub);
+                    }
+                }
+                
                 request.setAttribute("course", course);
                 request.setAttribute("modules", modules);
                 request.setAttribute("lessonsMap", lessonsMap);
+                request.setAttribute("assignments", assignments);
+                request.setAttribute("mySubmissions", mySubmissions);
                 request.getRequestDispatcher("/WEB-INF/views/course_view.jsp").forward(request, response);
             } catch (Exception e) {
                 throw new ServletException("Error loading course details", e);
@@ -92,6 +106,19 @@ public class StudentServlet extends HttpServlet {
                 } else {
                     request.getSession().setAttribute("error", "Invalid Enrollment Key!");
                 }
+            } else if ("submitAssignment".equals(action)) {
+                int assignmentId = Integer.parseInt(request.getParameter("assignmentId"));
+                int courseId = Integer.parseInt(request.getParameter("courseId"));
+                
+                com.example.lms.model.AssignmentSubmission submission = new com.example.lms.model.AssignmentSubmission();
+                submission.setAssignmentId(assignmentId);
+                submission.setStudentId(user.getUserId());
+                submission.setFilePath(request.getParameter("submissionLink"));
+                
+                new com.example.lms.dao.AssignmentSubmissionDAO().submit(submission);
+                request.getSession().setAttribute("success", "Assignment submitted successfully!");
+                response.sendRedirect(request.getContextPath() + "/student/course?id=" + courseId);
+                return; // exit to avoid the redirect below
             }
             response.sendRedirect(request.getContextPath() + "/student/dashboard");
         } catch (SQLException e) {

@@ -51,9 +51,20 @@ public class InstructorServlet extends HttpServlet {
                     lessonsMap.put(m.getModuleId(), lessonDAO.findByModuleId(m.getModuleId()));
                 }
                 
+                com.example.lms.dao.AssignmentDAO assignmentDAO = new com.example.lms.dao.AssignmentDAO();
+                com.example.lms.dao.AssignmentSubmissionDAO submissionDAO = new com.example.lms.dao.AssignmentSubmissionDAO();
+                
+                List<com.example.lms.model.Assignment> assignments = assignmentDAO.findByCourseId(courseId);
+                java.util.Map<Integer, List<com.example.lms.model.AssignmentSubmission>> submissionsMap = new java.util.HashMap<>();
+                for (com.example.lms.model.Assignment a : assignments) {
+                    submissionsMap.put(a.getAssignmentId(), submissionDAO.findByAssignmentId(a.getAssignmentId()));
+                }
+                
                 request.setAttribute("course", course);
                 request.setAttribute("modules", modules);
                 request.setAttribute("lessonsMap", lessonsMap);
+                request.setAttribute("assignments", assignments);
+                request.setAttribute("submissionsMap", submissionsMap);
                 request.getRequestDispatcher("/WEB-INF/views/course_manage.jsp").forward(request, response);
             } catch (SQLException e) {
                 throw new ServletException("DB Error", e);
@@ -106,6 +117,26 @@ public class InstructorServlet extends HttpServlet {
                 lesson.setContentType(com.example.lms.model.ContentType.valueOf(request.getParameter("contentType")));
                 lesson.setSequenceOrder(Integer.parseInt(request.getParameter("sequenceOrder")));
                 new com.example.lms.dao.LessonDAO().create(lesson);
+                response.sendRedirect(request.getContextPath() + "/instructor/course?id=" + courseId);
+            } else if ("addAssignment".equals(action)) {
+                int courseId = Integer.parseInt(request.getParameter("courseId"));
+                com.example.lms.model.Assignment assignment = new com.example.lms.model.Assignment();
+                assignment.setCourseId(courseId);
+                assignment.setTitle(request.getParameter("title"));
+                assignment.setDescription(request.getParameter("description"));
+                String dueDateStr = request.getParameter("dueDate");
+                if (dueDateStr != null && !dueDateStr.isEmpty()) {
+                    assignment.setDueDate(java.time.LocalDate.parse(dueDateStr));
+                }
+                assignment.setMaxScore(Integer.parseInt(request.getParameter("maxScore")));
+                new com.example.lms.dao.AssignmentDAO().create(assignment);
+                response.sendRedirect(request.getContextPath() + "/instructor/course?id=" + courseId);
+            } else if ("gradeSubmission".equals(action)) {
+                int courseId = Integer.parseInt(request.getParameter("courseId"));
+                int submissionId = Integer.parseInt(request.getParameter("submissionId"));
+                int score = Integer.parseInt(request.getParameter("score"));
+                String feedback = request.getParameter("feedback");
+                new com.example.lms.dao.AssignmentSubmissionDAO().gradeSubmission(submissionId, score, feedback);
                 response.sendRedirect(request.getContextPath() + "/instructor/course?id=" + courseId);
             }
         } catch (SQLException e) {

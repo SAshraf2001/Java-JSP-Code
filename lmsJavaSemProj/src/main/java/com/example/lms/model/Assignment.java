@@ -6,19 +6,19 @@ public class Assignment {
     private int assignmentId;
     private int courseId;
     private String title;
-    private String instructions;
+    private String description;
     private LocalDate dueDate;
-    private int maxPoints;
+    private int maxScore;
 
     public Assignment() {}
 
-    public Assignment(int assignmentId, int courseId, String title, String instructions, LocalDate dueDate, int maxPoints) {
+    public Assignment(int assignmentId, int courseId, String title, String description, LocalDate dueDate, int maxScore) {
         this.assignmentId = assignmentId;
         this.courseId = courseId;
         this.title = title;
-        this.instructions = instructions;
+        this.description = description;
         this.dueDate = dueDate;
-        this.maxPoints = maxPoints;
+        this.maxScore = maxScore;
     }
 
     // Getters and Setters
@@ -28,10 +28,10 @@ public class Assignment {
     public void setCourseId(int courseId) { this.courseId = courseId; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public String getInstructions() { return instructions; }
-    public void setInstructions(String instructions) { this.instructions = instructions; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
     public LocalDate getDueDate() { return dueDate; }
     public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
-    public int getMaxPoints() { return maxPoints; }
-    public void setMaxPoints(int maxPoints) { this.maxPoints = maxPoints; }
+    public int getMaxScore() { return maxScore; }
+    public void setMaxScore(int maxScore) { this.maxScore = maxScore; }
 }

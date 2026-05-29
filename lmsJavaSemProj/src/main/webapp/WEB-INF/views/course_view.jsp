@@ -86,6 +86,90 @@
                     </div>
                 </c:forEach>
             </div>
+
+            <!-- ASSIGNMENTS SECTION -->
+            <h4 class="mt-5 mb-3">Assignments</h4>
+            <c:if test="${empty assignments}">
+                <div class="alert alert-secondary">No assignments posted for this course yet.</div>
+            </c:if>
+            <div class="list-group mb-5">
+                <c:forEach var="assignment" items="${assignments}">
+                    <c:set var="submission" value="${mySubmissions[assignment.assignmentId]}" />
+                    
+                    <div class="list-group-item p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="me-auto">
+                                <h5 class="fw-bold text-primary mb-1">${assignment.title}</h5>
+                                <p class="mb-2">${assignment.description}</p>
+                                <p class="mb-1 text-danger small"><i class="bi bi-calendar-event"></i> Due: ${assignment.dueDate != null ? assignment.dueDate : 'No due date'} | Max Score: ${assignment.maxScore}</p>
+                                
+                                <c:choose>
+                                    <c:when test="${not empty submission}">
+                                        <hr>
+                                        <div class="bg-light p-3 rounded">
+                                            <p class="mb-1"><strong>Your Submission:</strong> <a href="${submission.filePath}" target="_blank">${submission.filePath}</a></p>
+                                            <p class="mb-1"><strong>Status:</strong> 
+                                                <c:choose>
+                                                    <c:when test="${submission.score != null}">
+                                                        <span class="badge bg-success">Graded</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-warning text-dark">Submitted, Pending Grade</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+                                            <c:if test="${submission.score != null}">
+                                                <p class="mb-1"><strong>Score:</strong> ${submission.score} / ${assignment.maxScore}</p>
+                                            </c:if>
+                                            <c:if test="${not empty submission.feedback}">
+                                                <p class="mb-0"><strong>Feedback:</strong> <em>${submission.feedback}</em></p>
+                                            </c:if>
+                                        </div>
+                                    </c:when>
+                                </c:choose>
+                            </div>
+                            
+                            <c:if test="${empty submission or submission.score == null}">
+                                <button class="btn btn-warning ms-3" data-bs-toggle="modal" data-bs-target="#submitAssignmentModal${assignment.assignmentId}">
+                                    ${empty submission ? 'Submit Assignment' : 'Update Submission'}
+                                </button>
+                            </c:if>
+                        </div>
+                    </div>
+
+                    <!-- Submit Assignment Modal -->
+                    <div class="modal fade" id="submitAssignmentModal${assignment.assignmentId}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Submit: ${assignment.title}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="${pageContext.request.contextPath}/student/dashboard" method="post" id="formSubmit${assignment.assignmentId}">
+                                        <input type="hidden" name="action" value="submitAssignment">
+                                        <input type="hidden" name="courseId" value="${course.courseId}">
+                                        <input type="hidden" name="assignmentId" value="${assignment.assignmentId}">
+                                        
+                                        <div class="alert alert-info small">
+                                            Please provide a link to your completed work (e.g., Google Drive link, GitHub repository, or YouTube video). Make sure the link is public or shared with your instructor.
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Submission Link (URL)</label>
+                                            <input type="url" class="form-control" name="submissionLink" value="${not empty submission ? submission.filePath : ''}" placeholder="https://..." required>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" form="formSubmit${assignment.assignmentId}" class="btn btn-primary">Submit Work</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+            
         </div>
     </div>
 </div>

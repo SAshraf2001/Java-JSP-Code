@@ -5,17 +5,17 @@ public class AssignmentSubmission {
     private int assignmentId;
     private int studentId;
     private String filePath;
-    private Double grade; // nullable
+    private Integer score; // nullable
     private String feedback;
 
     public AssignmentSubmission() {}
 
-    public AssignmentSubmission(int submissionId, int assignmentId, int studentId, String filePath, Double grade, String feedback) {
+    public AssignmentSubmission(int submissionId, int assignmentId, int studentId, String filePath, Integer score, String feedback) {
         this.submissionId = submissionId;
         this.assignmentId = assignmentId;
         this.studentId = studentId;
         this.filePath = filePath;
-        this.grade = grade;
+        this.score = score;
         this.feedback = feedback;
     }
 
@@ -28,8 +28,8 @@ public class AssignmentSubmission {
     public void setStudentId(int studentId) { this.studentId = studentId; }
     public String getFilePath() { return filePath; }
     public void setFilePath(String filePath) { this.filePath = filePath; }
-    public Double getGrade() { return grade; }
-    public void setGrade(Double grade) { this.grade = grade; }
+    public Integer getScore() { return score; }
+    public void setScore(Integer score) { this.score = score; }
     public String getFeedback() { return feedback; }
     public void setFeedback(String feedback) { this.feedback = feedback; }
 }
