@@ -1,0 +1,149 @@
+/* style.css - Premium GymSystem Styling */
+
+body {
+    font-family: 'Outfit', sans-serif;
+    color: #e0e0e0;
+}
+
+/* Backgrounds */
+.auth-bg {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+}
+
+.dashboard-bg {
+    background: #111111;
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(25, 50, 100, 0.2), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(100, 30, 80, 0.15), transparent 25%);
+    min-height: 100vh;
+}
+
+/* Glassmorphism Components */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 16px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+}
+
+.glass-nav {
+    background: rgba(15, 15, 15, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #4facfe !important;
+    box-shadow: 0 0 0 0.25rem rgba(79, 172, 254, 0.25) !important;
+}
+
+.glass-modal {
+    background: rgba(25, 25, 30, 0.95) !important;
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Buttons and Micro-animations */
+.btn-primary {
+    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #00f2fe 0%, #4facfe 100%);
+    box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: linear-gradient(to right, #0ba360 0%, #3cba92 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(60, 186, 146, 0.4);
+}
+
+.btn-animate {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-animate:active {
+    transform: translateY(1px);
+}
+
+/* Premium Cards */
+.premium-card {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+
+.premium-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+/* Custom Nav Tabs */
+.custom-tabs {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-tabs .nav-link {
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.custom-tabs .nav-link:hover {
+    color: #fff;
+    border-color: transparent;
+}
+
+.custom-tabs .nav-link.active {
+    color: #4facfe;
+    background: transparent;
+    border-bottom: 2px solid #4facfe;
+}
+
+/* Tables */
+.custom-table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #e0e0e0;
+    --bs-table-border-color: rgba(255, 255, 255, 0.05);
+}
+
+.custom-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.custom-table th {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: #888;
+    border-bottom-width: 1px;
+}
